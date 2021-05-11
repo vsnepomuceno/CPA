@@ -103,7 +103,7 @@ def n4Pres():
             for campus in nUtils.campi:
                 to = dict()
                 utils.initAddInTotals3(to)
-                res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM tae_presencial where c6=\'"+ campus + "\' GROUP  BY c10")
+                res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM tae_presencial where c6=\'"+ campus + "\' GROUP  BY c"+str(i+10)+"")
                 for value in res:
                     utils.addInTotals3(value,to)              
                 res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM disc_presencial where c6=\'"+ campus + "\' GROUP  BY c"+str(i+10)+"")

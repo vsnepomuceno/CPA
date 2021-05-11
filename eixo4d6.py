@@ -23,7 +23,7 @@ def g1EAD():
                     for value in res:
                         utils.addInTotals7(value, to)   
                 else :
-                    res = conn.executeAllQuery("SELECT c"+str((i-1)+31)+" , COUNT(*) total FROM disc_ead GROUP  BY c"+str(i+31)+"")
+                    res = conn.executeAllQuery("SELECT c"+str((i-1)+31)+" , COUNT(*) total FROM disc_ead GROUP  BY c"+str((i-1)+31)+"")
                     for value in res:
                         utils.addInTotals7(value, to)            
                 totals.append(to)      

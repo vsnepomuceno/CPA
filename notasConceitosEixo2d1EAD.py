@@ -5,121 +5,146 @@ import notasConceitosUtil as nUtils
 conceitosgerais = list()
 
 def n1EAD():
-    totals=list() 
-    try:
-        for campus in nUtils.campi:
+    try:        
+        totals1=dict()  
+        utils.initAddInTotals(totals1)          
+        res = conn.executeAllQuery("SELECT c7 , COUNT(*) total FROM tae_ead GROUP  BY c7")
+        for value in res:
+            utils.addInTotals(value, totals1)   
+
+        res = nUtils.calcularConceitoEeadDocTae(totals1)
+        conceitosgerais.append(res)
+
+        totals1=dict()  
+        utils.initAddInTotals(totals1)
+        res = conn.executeAllQuery("SELECT c7 , COUNT(*) total FROM doc_ead GROUP  BY c7")
+        for value in res:
+            utils.addInTotals(value, totals1) 
+
+        res = nUtils.calcularConceitoEeadDocTae(totals1)
+        conceitosgerais.append(res)
+
+        for campus in nUtils.campiEad:
             totals1=dict()  
-            utils.initAddInTotals(totals1)          
-            res = conn.executeAllQuery("SELECT c7 , COUNT(*) total FROM tae_ead where c6=\'"+ campus + "\' GROUP  BY c7")
-            for value in res:
-                utils.addInTotals(value, totals1)   
-
-            res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM disc_ead where c6=\'"+ campus + "\' GROUP  BY c8")
+            utils.initAddInTotals(totals1)
+            res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM disc_ead where c7=\'"+ campus +"\' GROUP  BY c8")
+            
             for value in res:
                 utils.addInTotals(value, totals1) 
-
-            res = conn.executeAllQuery("SELECT c7 , COUNT(*) total FROM doc_ead where c5=\'"+ campus + "\' GROUP  BY c7")
-            for value in res:
-                utils.addInTotals(value, totals1) 
-    
-            totals.append(totals1)    
+            res = nUtils.calcularConceitoEeadDocTae(totals1)
+            conceitosgerais.append(res)
     except Exception as e:
         print(e)
-    
-    return totals
 
 
+n1EAD()
 
-res = nUtils.calcularConceito(n1EAD())
-conceitosgerais.append(res)
 
 
 def n2EAD():
-    totals=list() 
-    try:
-        for campus in nUtils.campi:
+    try:        
+        totals1=dict()  
+        utils.initAddInTotals(totals1)          
+        res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM tae_ead GROUP  BY c8")
+        for value in res:
+            utils.addInTotals(value, totals1)   
+
+        res = nUtils.calcularConceitoEeadDocTae(totals1)
+        conceitosgerais.append(res)
+
+        totals1=dict()  
+        utils.initAddInTotals(totals1)
+        res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM doc_ead GROUP  BY c8")
+        for value in res:
+            utils.addInTotals(value, totals1) 
+
+        res = nUtils.calcularConceitoEeadDocTae(totals1)
+        conceitosgerais.append(res)
+
+        for campus in nUtils.campiEad:
             totals1=dict()  
-            utils.initAddInTotals(totals1)  
-            res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM tae_ead where c6=\'"+ campus + "\' GROUP  BY c8")
-            for value in res:
-                utils.addInTotals(value, totals1)  
-
-            res = conn.executeAllQuery("SELECT c9 , COUNT(*) total FROM disc_ead where c6=\'"+ campus + "\' GROUP  BY c9")
+            utils.initAddInTotals(totals1)
+            res = conn.executeAllQuery("SELECT c9 , COUNT(*) total FROM disc_ead where c7=\'"+ campus +"\' GROUP  BY c9")
+            
             for value in res:
                 utils.addInTotals(value, totals1) 
-
-            res = conn.executeAllQuery("SELECT c8 , COUNT(*) total FROM doc_ead where c5=\'"+ campus + "\' GROUP  BY c8")
-            for value in res:
-                utils.addInTotals(value, totals1) 
-
-            totals.append(totals1)
+            res = nUtils.calcularConceitoEeadDocTae(totals1)
+            conceitosgerais.append(res)
     except Exception as e:
         print(e)
-    
-    return totals
 
-
-res = nUtils.calcularConceito(n2EAD())
-conceitosgerais.append(res)
-
+n2EAD()
 
 def n3EAD():
-    totals=list() 
-    try:
-        for campus in nUtils.campi:
+    try:        
+        totals1=dict()  
+        utils.initAddInTotals2(totals1)          
+        res = conn.executeAllQuery("SELECT c9, COUNT(*) total FROM tae_ead GROUP  BY c9")
+        for value in res:
+            utils.addInTotals2(value, totals1)   
+
+        res = nUtils.calcularConceito2EAD(totals1)
+        conceitosgerais.append(res)
+
+        totals1=dict()  
+        utils.initAddInTotals2(totals1)
+        res = conn.executeAllQuery("SELECT c9 , COUNT(*) total FROM doc_ead GROUP  BY c9")
+        for value in res:
+            utils.addInTotals2(value, totals1) 
+
+        res = nUtils.calcularConceito2EAD(totals1)
+        conceitosgerais.append(res)
+
+        for campus in nUtils.campiEad:
             totals1=dict()  
-            utils.initAddInTotals2(totals1)  
-            res = conn.executeAllQuery("SELECT c9 , COUNT(*) total FROM tae_ead where c6=\'"+ campus + "\' GROUP  BY c9")
-            for value in res:
-                utils.addInTotals2(value, totals1)      
-
-            totals2=dict()  
-            utils.initAddInTotals2(totals2) 
-            res = conn.executeAllQuery("SELECT c10 , COUNT(*) total FROM disc_ead where c6=\'"+ campus + "\' GROUP  BY c10")
+            utils.initAddInTotals2(totals1)
+            res = conn.executeAllQuery("SELECT c10 , COUNT(*) total FROM disc_ead where c7=\'"+ campus +"\' GROUP  BY c10")
+            
             for value in res:
                 utils.addInTotals2(value, totals1) 
-
-            totals3=dict()  
-            utils.initAddInTotals2(totals3) 
-            res = conn.executeAllQuery("SELECT c9 , COUNT(*) total FROM doc_ead where c5=\'"+ campus + "\' GROUP  BY c9")
-            for value in res:
-                utils.addInTotals2(value, totals1) 
-
-            totals.append(totals1)
+            res = nUtils.calcularConceito2EAD(totals1)
+            conceitosgerais.append(res)
     except Exception as e:
         print(e)
-    
-    return totals
 
 
-res = nUtils.calcularConceito2(n3EAD())
-conceitosgerais.append(res)
+n3EAD()
 
 def n4EAD():
     
     try:    
         for i in range(12):
-            totals=list()
-            for campus in nUtils.campi:
-                to = dict()
-                utils.initAddInTotals3(to)
-                res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM tae_ead where c6=\'"+ campus + "\' GROUP  BY c"+str(i+10)+"")
+            totals1=dict()  
+            utils.initAddInTotals3(totals1)          
+            res = conn.executeAllQuery("SELECT c"+str(i+10)+", COUNT(*) total FROM tae_ead GROUP  BY c"+str(i+10)+"")
+            for value in res:
+                utils.addInTotals3(value, totals1)   
+
+            res = nUtils.calcularConceitoEeadDocTae(totals1)
+            conceitosgerais.append(res)
+
+            totals1=dict()  
+            utils.initAddInTotals3(totals1)
+            res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM doc_ead GROUP  BY c"+str(i+10)+"")
+            for value in res:
+                utils.addInTotals3(value, totals1) 
+
+            res = nUtils.calcularConceitoEeadDocTae(totals1)
+            conceitosgerais.append(res)
+
+            for campus in nUtils.campiEad:
+                totals1=dict()  
+                utils.initAddInTotals3(totals1)
+                res = conn.executeAllQuery("SELECT c"+str(i+11)+" , COUNT(*) total FROM disc_ead where c7=\'"+ campus +"\' GROUP  BY c"+str(i+11)+"")
+                
                 for value in res:
-                    utils.addInTotals3(value,to)              
-                res = conn.executeAllQuery("SELECT c"+str(i+11)+" , COUNT(*) total FROM disc_ead where c6=\'"+ campus + "\' GROUP  BY c"+str(i+11)+"")
-                for value in res:
-                    utils.addInTotals3(value, to)            
-                res = conn.executeAllQuery("SELECT c"+str(i+10)+" , COUNT(*) total FROM doc_ead where c5=\'"+ campus + "\' GROUP  BY c"+str(i+10)+"")
-                for value in res:
-                    utils.addInTotals3(value, to)                 
-                totals.append(to)   
-            res = nUtils.calcularConceito(totals)
-            conceitosgerais.append(res)   
+                    utils.addInTotals3(value, totals1) 
+                res = nUtils.calcularConceitoEeadDocTae(totals1)
+                conceitosgerais.append(res)  
 
     except Exception as e:
         print(e)
-    
-    return totals
 
 n4EAD()
 
+nUtils.printConceitosGeraisEAD(conceitosgerais, 'conceitosEixo2d1EAD.txt')
