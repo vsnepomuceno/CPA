@@ -1,4 +1,4 @@
-import db.connectorMySql as conn
+import cpa.db.connectorMySql as conn
 import utils
 import charts
 import chartsPanda
@@ -304,6 +304,7 @@ def g4Plot(totals):
 
 
 
-#res = g4PresSearch()
+res = g4PresSearch()
+print(res)
 #res = g4EADSearch()
-#g4Plot(res)
+g4Plot(res)

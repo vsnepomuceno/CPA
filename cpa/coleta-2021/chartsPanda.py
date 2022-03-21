@@ -7,25 +7,26 @@ import utils
 
 
 
-def plotChartPd(hlabels, ylabel, barLabels, title, valuess):
-
+def plotChartPd(hlabels, ylabel, barLabels, title, valuess, modalidade):
         data = dict()
-        fig, ax = plot.subplots(figsize=(10,7))
+        fig, ax = plot.subplots(figsize=(11,10))
         for i in range(len(barLabels)):
-                data[barLabels[i]] = valuess[i]
+                data[barLabels[i]] = valuess[i]    
 
+
+        fig.suptitle(title, fontsize=12)
         #print(data)
         # Dictionary loaded into a DataFrame  
         dataFrame = pd.DataFrame(data, 
                         index=hlabels)
         
-        print(dataFrame)
+        #print(dataFrame)
         stacked_data = dataFrame.apply(lambda x: x*100/sum(x), axis=1)
 
-        newcmp = lcmap('testCmap', segmentdata=utils.cdict, N=256)
+        newcmp = lcmap('testCmap', segmentdata=utils.cdictNovo, N=256)
 
         # Draw a vertical bar chart
-        ax = stacked_data[barLabels].plot(kind='bar', title=title, stacked=True, colormap=newcmp, legend=False, ax=ax)
+        ax = stacked_data[barLabels].plot(kind='bar', stacked=True, colormap=newcmp, legend=False, ax=ax)
 
         ax.set_xticks(range(len(hlabels)))
         ax.tick_params(labelsize=8)
@@ -36,16 +37,19 @@ def plotChartPd(hlabels, ylabel, barLabels, title, valuess):
 
         for p in ax.patches:
                 width, height = p.get_width(), p.get_height()
-                x, y = p.get_xy() 
-                ax.text(x+width/2, 
-                        y+height/2, 
-                        '{:0.2f}%'.format(height), 
-                        horizontalalignment='center', 
-                        verticalalignment='center', 
-                        fontsize=8)
+                if (height > 0.0):
+                        x, y = p.get_xy() 
+                        ax.text(x+width/2, 
+                                y+height/2, 
+                                '{:0.2f}%'.format(height), 
+                                horizontalalignment='center', 
+                                verticalalignment='center', 
+                                fontsize=8)
 
         fig.tight_layout()
-        plot.show(block=True)
+        #plot.show(block=True)
+        plot.savefig("./graficos/"+title[0:2] + "_" +modalidade + ".pdf")
+        plot.close(fig)
 
 
 def plotChartPd2(hlabels, ylabel, barLabels, title, valuess):
