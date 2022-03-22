@@ -30,25 +30,46 @@ def plotChartPd(hlabels, ylabel, barLabels, title, valuess, modalidade):
 
         ax.set_xticks(range(len(hlabels)))
         ax.tick_params(labelsize=8)
-        ax.set_xticklabels(hlabels, rotation = 45, ha="right", rotation_mode="anchor")
+        ax.set_xticklabels(hlabels, rotation = 15, ha="right", rotation_mode="anchor")
 
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles[::-1], labels[::-1],loc='upper left', ncol=1, bbox_to_anchor=(1.05, 1))
 
+        changeSide = True
         for p in ax.patches:
                 width, height = p.get_width(), p.get_height()
-                if (height > 0.0):
-                        x, y = p.get_xy() 
-                        ax.text(x+width/2, 
-                                y+height/2, 
-                                '{:0.2f}%'.format(height), 
-                                horizontalalignment='center', 
-                                verticalalignment='center', 
-                                fontsize=8)
+                if (height > 0.0):                        
+                        x, y = p.get_xy()
+                        if (height > 1.3):
+                                ax.text(x+width/2, 
+                                        y+height/2, 
+                                        '{:0.2f}%'.format(height), 
+                                        horizontalalignment='center', 
+                                        verticalalignment='center', 
+                                        fontsize=8)
+                        else:
+                                if (changeSide) :
+                                        ax.text(x+width/2, 
+                                                y+height/2, 
+                                                '{:0.2f}%'.format(height), 
+                                                horizontalalignment='left', 
+                                                verticalalignment='center', 
+                                                fontsize=8)
+                                else :
+                                        ax.text(x+width/2, 
+                                                y+height/2, 
+                                                '{:0.2f}%'.format(height), 
+                                                horizontalalignment='right', 
+                                                verticalalignment='center', 
+                                                fontsize=8)
+                                
+                                changeSide = not (changeSide) 
+                        
+                        
 
         fig.tight_layout()
         #plot.show(block=True)
-        plot.savefig("./graficos/"+title[0:2] + "_" +modalidade + ".pdf")
+        plot.savefig("./graficos/"+title[0:2] + "_" +modalidade + ".png")
         plot.close(fig)
 
 

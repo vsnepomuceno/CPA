@@ -49,7 +49,7 @@ def generateGraphics() :
     title = ""
 
     for i in range(41):
-        i = i+1
+        i = i+2
         query = """SELECT
                         perg.titulo,    
                         perg.sub_titulo,
@@ -101,7 +101,23 @@ def generateGraphics() :
 
             initBarLabels(barLabels, escala)    
             if (subtitle) :    
-                hLabels.append(subtitle[0:60])
+                if (len(subtitle) > 60):
+                    if (i == 37 or i == 39 or i == 41) :
+                        try:                        
+                            index = subtitle[120:len(subtitle)].index(" ")
+                            hLabels.append(subtitle[0:5] + subtitle[60:120+index] + "\n" + subtitle[120+index:180])
+                        except ValueError:
+                            hLabels.append(subtitle[0:5] + subtitle[60:len(subtitle)])
+                    else:     
+                        try:  
+                            index = subtitle[60:len(subtitle)].index(" ")
+                            hLabels.append(subtitle[0:60+index] + "\n" + subtitle[60+index:120])
+                        except ValueError:
+                            hLabels.append(subtitle)
+                    
+                    
+                else: 
+                    hLabels.append(subtitle)
                 ylabel = "Total de Respostas"
             else:
                 hLabels.append("Discente")
@@ -150,7 +166,24 @@ def generateGraphics() :
                     initDicts(dataAgreg)
 
                 if (subtitle and (subtitle != value[1])):
-                    hLabels.append(value[1][0:60])
+                    if (len(value[1]) > 60):
+                        
+                            if (i == 37 or i == 39 or i == 41) :
+                                try:
+                                    index = value[1][120:len(value[1])].index(" ")
+                                    hLabels.append(subtitle[0:5] + value[1][60:120+index] + "\n" + value[1][120+index:180])
+                                except ValueError:
+                                    hLabels.append(subtitle[0:5] + value[1][60:len(value[1])])
+                            else:  
+                                try:   
+                                    index = value[1][60:len(value[1])].index(" ")
+                                    hLabels.append(value[1][0:60+index] + "\n" + value[1][60+index:120])
+                                except ValueError:
+                                    hLabels.append(value[1])
+                        
+                    else: 
+                        hLabels.append(value[1])
+                    
                 subtitle = value[1]
                 modalidade = value[3] 
                 segmento = value[4]  
@@ -192,20 +225,24 @@ def generateGraphics() :
 
               
             print(title)
-            if (len(title) > 110):
-                if (len(dataEAD) > 0):
-                    Plot(hLabels, ylabel, barLabels, title[0:110]+"\n"+title[110:len(title)], dataEAD, "EAD")
-                if (len(dataPresencial) > 0):
-                    Plot(hLabels, ylabel, barLabels, title[0:110]+"\n"+title[110:len(title)], dataPresencial, "Presencial")
-            else:
-                if (len(dataEAD) > 0):
-                    Plot(hLabels, ylabel, barLabels, title, dataEAD, "EAD")
-                if (len(dataPresencial) > 0):
-                    Plot(hLabels, ylabel, barLabels, title, dataPresencial, "Presencial")
+            
+            if (len(title) > 100):
+                try:
+                    index = title[100:len(title)].index(" ")
+                    title = title[0:100+index]+"\n"+title[100+index:len(title)]
+                except ValueError:
+                    print("ValueError")
+           
+            if (len(dataEAD) > 0):
+                Plot(hLabels, ylabel, barLabels, title, dataEAD, "EAD")
+            if (len(dataPresencial) > 0):
+                Plot(hLabels, ylabel, barLabels, title, dataPresencial, "Presencial")
+
             hLabels = []
             ylabel = ""
             barLabels= [] 
             title = ""
+            break
             
   
 generateGraphics()
