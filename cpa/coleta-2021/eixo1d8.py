@@ -310,59 +310,119 @@ def generateGraphics() :
   
 #generateGraphics()
 
+polos = ["Águas Belas",
+        "Carpina",
+        "Geral", 
+        "Gravatá", 
+        "Limoeiro",
+        "Palmares",
+        "Pesqueira",
+        "Recife",
+        "Santa Cruz",
+        "Santana do Ipanema/AL",
+        "Sede/Reitoria",
+        "Sertânia"]
+
+
 def generateEADConcepts() :
+    file_object  = open("ead_resp.txt", "w")
+    file_object.seek(0)
     allRegistros = dict()
     for i in range(41):
-        i = i+1
-        query = """SELECT
-                        perg.titulo,
-                        perg.sub_titulo,
-                        curso1_.nome_curso,
-                        `resposta`,
-                        COUNT(resp.resposta)
-                    FROM
-                        resposta resp
-                    INNER JOIN pergunta perg ON
-                        resp.pergunta_id = perg.id
-                    INNER JOIN usuario u ON
-                        resp.respondente_id = u.id
-                    INNER JOIN respondente_curso cursos0_ ON
-                        cursos0_.respondente_id = u.id
-                    INNER JOIN curso curso1_ ON
-                        cursos0_.curso_id = curso1_.id
-                    INNER JOIN campus campus2_ ON
-                        curso1_.campus_id = campus2_.id
-                    WHERE
-                        perg.titulo LIKE '{number})%' AND (
-                            `resposta` = 0 OR `resposta` = 1 OR `resposta` = 2 OR `resposta` = 3 OR `resposta` = 4 OR `resposta` = 5
-                        ) AND  campus2_.nome_campus = 'EAD' AND (perg.tipo_pergunta = 'ESCALA_1' OR perg.tipo_pergunta = 'ESCALA_3')
-                    GROUP BY
-                        resp.`resposta`,
-                        perg.titulo,
-                        curso1_.nome_curso,
-                        perg.sub_titulo
-                    ORDER BY
-                        perg.titulo,
-                        perg.sub_titulo,
-                        curso1_.nome_curso,
-                        resp.`resposta`"""
+        i = i+2
+        registros = list()
+        for polo in polos:
+            query = """SELECT
+                            perg.titulo,
+                            perg.sub_titulo,
+                            `resposta`,
+                            COUNT(resp.resposta)
+                        FROM
+                            resposta resp
+                        INNER JOIN pergunta perg ON
+                            resp.pergunta_id = perg.id
+                        INNER JOIN usuario u ON
+                            resp.respondente_id = u.id
+                        INNER JOIN respondente_curso cursos0_ ON
+                            cursos0_.respondente_id = u.id
+                        INNER JOIN curso curso1_ ON
+                            cursos0_.curso_id = curso1_.id
+                        INNER JOIN campus campus2_ ON
+                            curso1_.campus_id = campus2_.id
+                        WHERE
+                            perg.titulo LIKE '{number})%' AND (
+                                `resposta` = 0 OR `resposta` = 1 OR `resposta` = 2 OR `resposta` = 3 OR `resposta` = 4 OR `resposta` = 5
+                            ) AND  campus2_.nome_campus = 'EAD' 
+                            AND (perg.tipo_pergunta = 'ESCALA_1' OR perg.tipo_pergunta = 'ESCALA_3')
+                            AND curso1_.nome_curso LIKE '%{poloS}%'
+                        GROUP BY
+                            resp.`resposta`,
+                            perg.titulo,
+                            perg.sub_titulo
+                        ORDER BY
+                            perg.titulo,
+                            perg.sub_titulo,
+                            resp.`resposta`"""
 
-        query = query.format(number=i)
-        #print(query)
+            query = query.format(number=i, poloS=polo)
+            #print(query)
 
-        res = conn.executeAllQuery(query)
-        #print(res)
+            res = conn.executeAllQuery(query)
+            #print(res)
+            #break
+            
+            if (len(res) > 0) :                
+                reg =  Registro()  
+                totalCasos = 0
+                conceito = 0.0 
+                for value in res:
+                    if (reg.campus == ''):
+                        reg.campus = polo 
+                        reg.titulo = value[0]           
+                        reg.subtitulo = value[1]   
+
+                    if (reg.campus != polo or reg.subtitulo != value[1]): # mudou campus
+                        trunc = int((conceito/totalCasos)*100)
+                        reg.conceito = (trunc/100)
+                        registros.append(reg)
+                        file_object.write(polo + ": " + reg.subtitulo+ "\n")
+                        reg = Registro()
+                        reg.campus = polo
+                        reg.titulo = value[0]           
+                        reg.subtitulo = value[1]
+                        totalCasos = 0
+                        conceito = 0.0
+                        
+                    # calcular conceito            
+                    conceito = conceito + value[2]*value[3]
+                    totalCasos = totalCasos + value[3]
+
+                trunc = int((conceito/totalCasos)*100)
+                reg.conceito = (trunc/100)
+                registros.append(reg)
+                if (reg.subtitulo):
+                   file_object.write(polo + ": " + reg.subtitulo+ "\n")
+                   registros = sorted(registros, key=lambda x: x.subtitulo)
+            else:
+                   
+                file_object.write(polo + " (Não respondeu): " + str(i) + "\n")
+        #break
+        allRegistros[i] = registros
+    file_object.close()    
         
-        if (len(res) > 0) :
-            for value in res:
-                print(value)
-            break
-
     return allRegistros
 
 
 all = generateEADConcepts()      
 #printConceitosGerais(all, "conceitosEAD.txt")
+
+#for key in all.keys(): 
+#    print(key)
+#    for reg in all.get(key):
+#        if (reg.subtitulo):
+#            print(reg.campus + " " + reg.titulo + " " +reg.subtitulo + " " + str(reg.conceito))       
+#        else:
+#            print(reg.campus + " " + reg.titulo + " SEM subtilte " + str(reg.conceito)) 
 
 def generatePresencialConcepts() :
 
